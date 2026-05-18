@@ -1,3 +1,26 @@
+# Chisel Multi Watchdogs
+
+Fork of [jpillora/chisel](https://github.com/jpillora/chisel) with the following additions:
+
+- Multi-client mode (multi-client)
+- Per-tunnel watchdog
+- Automatic restart of stuck or failed tunnels
+- Configurable YAML-based client configuration
+
+## Original Project
+
+This project is based on the original Chisel project:
+
+https://github.com/jpillora/chisel
+
+All original functionality and licensing are preserved.
+
+## Custom Release
+
+Current custom release tag:
+
+v1.11.5-multi-watchdog
+
 # Chisel
 
 [![GoDoc](https://godoc.org/github.com/jpillora/chisel?status.svg)](https://godoc.org/github.com/jpillora/chisel) [![CI](https://github.com/jpillora/chisel/workflows/CI/badge.svg)](https://github.com/jpillora/chisel/actions?workflow=CI)
