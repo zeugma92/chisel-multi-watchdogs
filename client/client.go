@@ -38,6 +38,7 @@ type Config struct {
 	MaxRetryInterval time.Duration
 	Server           string
 	Proxy            string
+	LogPrefix	 string
 	Remotes          []string
 	Headers          http.Header
 	TLS              TLSConfig
@@ -96,7 +97,7 @@ func NewClient(c *Config) (*Client, error) {
 	hasSocks := false
 	hasStdio := false
 	client := &Client{
-		Logger: cio.NewLogger("client"),
+		Logger: cio.NewLogger(c.LogPrefix),
 		config: c,
 		computed: settings.Config{
 			Version: chshare.BuildVersion,

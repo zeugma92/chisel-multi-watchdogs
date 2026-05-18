@@ -6,6 +6,8 @@ import (
 	"os"
 )
 
+var LogHook func(prefix string, line string)
+
 //Logger is pkg/log Logger with prefixing and 2 log levels
 type Logger struct {
 	Info, Debug bool
@@ -30,15 +32,23 @@ func NewLoggerFlag(prefix string, flag int) *Logger {
 }
 
 func (l *Logger) Infof(f string, args ...interface{}) {
-	if l.IsInfo() {
-		l.logger.Printf(l.prefix+": "+f, args...)
-	}
+ if l.IsInfo() {
+  line := fmt.Sprintf(f, args...)
+  if LogHook != nil {
+   LogHook(l.prefix, line)
+  }
+  l.logger.Printf(l.prefix+": "+f, args...)
+ }
 }
 
 func (l *Logger) Debugf(f string, args ...interface{}) {
-	if l.IsDebug() {
-		l.logger.Printf(l.prefix+": "+f, args...)
-	}
+ if l.IsDebug() {
+  line := fmt.Sprintf(f, args...)
+  if LogHook != nil {
+   LogHook(l.prefix, line)
+  }
+  l.logger.Printf(l.prefix+": "+f, args...)
+ }
 }
 
 func (l *Logger) Errorf(f string, args ...interface{}) error {

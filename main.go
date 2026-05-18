@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"context"
 
 	chclient "github.com/jpillora/chisel/client"
 	chserver "github.com/jpillora/chisel/server"
@@ -60,6 +61,9 @@ func main() {
 		server(args)
 	case "client":
 		client(args)
+        case "multi-client":
+                multiClient(args)
+
 	default:
 		fmt.Print(help)
 		os.Exit(0)
@@ -422,8 +426,12 @@ var clientHelp = `
 ` + commonHelp
 
 func client(args []string) {
+ clientWithContext(cos.InterruptContext(), args)
+}
+func clientWithContext(ctx context.Context, args []string) {
 	flags := flag.NewFlagSet("client", flag.ContinueOnError)
 	config := chclient.Config{Headers: http.Header{}}
+	flags.StringVar(&config.LogPrefix, "log-prefix", "client", "")
 	flags.StringVar(&config.Fingerprint, "fingerprint", "", "")
 	flags.StringVar(&config.Auth, "auth", "", "")
 	flags.DurationVar(&config.KeepAlive, "keepalive", 25*time.Second, "")
@@ -475,11 +483,24 @@ func client(args []string) {
 		generatePidFile()
 	}
 	go cos.GoStats()
-	ctx := cos.InterruptContext()
 	if err := c.Start(ctx); err != nil {
-		log.Fatal(err)
+	 log.Println(err)
+	 return
 	}
-	if err := c.Wait(); err != nil {
-		log.Fatal(err)
+	errCh := make(chan error, 1)
+
+	go func() {
+	 errCh <- c.Wait()
+	}()
+
+	select {
+	case err := <-errCh:
+	 if err != nil {
+	  log.Println(err)
+	 }
+	case <-ctx.Done():
+	 log.Println("context cancelled, forcing client exit")
 	}
+
+	return
 }

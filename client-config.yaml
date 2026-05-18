@@ -1,0 +1,45 @@
+server: "https://yourdomain.example"
+auth: "user:pass"
+
+tls_skip_verify: true
+fingerprint: ""
+keepalive: "10s"
+max_retry_interval: "15s"
+retry_delay: "5s"
+start_delay: "200ms"
+tunnels:
+  - name: "capsule-1"
+    remote: "R:20001:socks"
+
+  - name: "capsule-2"
+    remote: "R:20002:127.0.0.1:9000"
+
+  - name: "capsule-3"
+    remote: "R:20003:127.0.0.1:9001"
+range_tunnels:
+  - name_prefix: "capsule2"
+    from: 22001
+    to: 22020
+    target_host: "127.0.0.1"
+    target_from: 9000
+  - name_prefix: "capsule3"
+    from: 30001
+    to: 30020
+    mode: "socks"
+    bind: ""
+
+watchdog:
+  enabled: true
+  connect_timeout: "15s"
+  bad_state_timeout: "15s"
+  restart_delay: "10s"
+  patterns:
+    - "Retrying"
+    - "EOF"
+    - "timeout"
+    - "connecting"
+    - "connection reset"
+    - "bad handshake"
+    - "closed"
+    - "context canceled"
+
