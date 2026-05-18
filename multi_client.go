@@ -90,7 +90,6 @@ cio.LogHook = func(prefix string, line string) {
 
  lowerLine := strings.ToLower(line)
 
- // اگر Connected شد، وضعیت bad پاک شود
  if strings.Contains(lowerLine, "connected") {
   watchdogMu.Lock()
   if state, ok := watchdogStates[prefix]; ok {
@@ -100,7 +99,6 @@ cio.LogHook = func(prefix string, line string) {
   return
  }
 
- // آیا pattern بد دیده شد؟
  matched := ""
  for _, pattern := range cfg.Watchdog.Patterns {
   if strings.Contains(lowerLine, strings.ToLower(pattern)) {
@@ -113,7 +111,6 @@ cio.LogHook = func(prefix string, line string) {
   return
  }
 
- // parse bad_state_timeout
  timeout := 20 * time.Second
  if cfg.Watchdog.BadStateTimeout != "" {
   if d, err := time.ParseDuration(cfg.Watchdog.BadStateTimeout); err == nil {
@@ -129,7 +126,6 @@ cio.LogHook = func(prefix string, line string) {
   return
  }
 
- // اولین خطای بد
 if state.LastBadTime.IsZero() {
  state.LastBadTime = time.Now()
  fmt.Printf("%s watchdog detected '%s', waiting %s before restart\n",
@@ -157,12 +153,10 @@ state.Cancel()
  return
 }
 
- // اگر هنوز timeout نگذشته، کاری نکن
  if time.Since(state.LastBadTime) < timeout {
   return
  }
 
- // timeout گذشته، restart
  fmt.Printf("%s watchdog timeout reached, restarting\n", prefix)
  state.LastBadTime = time.Time{}
  state.Cancel()
