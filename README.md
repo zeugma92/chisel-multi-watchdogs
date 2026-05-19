@@ -19,7 +19,7 @@ All original functionality and licensing are preserved.
 
 usage:
 ```
-./chisel-mult multi-client --config -config
+./chisel-multi multi-client --config -config.yaml
 ```
 Current custom release tag:
 
