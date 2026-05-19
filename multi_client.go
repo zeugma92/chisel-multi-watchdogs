@@ -37,6 +37,7 @@ type RangeTunnelConfig struct {
 
  TargetHost string`yaml:"target_host"`
  TargetFrom int   `yaml:"target_from"`
+ TargetFixed bool `yaml:"target_fixed"`
 }
 
 type WatchdogConfig struct {
@@ -204,7 +205,10 @@ func buildAllTunnels(cfg MultiConfig) []TunnelConfig {
      remote = fmt.Sprintf("R:%d:socks", port)
     }
    } else {
-    targetPort := r.TargetFrom + (port - r.From)
+    targetPort := r.TargetFrom
+    if !r.TargetFixed {
+     targetPort = r.TargetFrom + (port - r.From)
+    }
 
     if r.Bind != "" {
      remote = fmt.Sprintf("R:%s:%d:%s:%d", r.Bind, port, r.TargetHost, targetPort)
