@@ -17,6 +17,10 @@ All original functionality and licensing are preserved.
 
 ## Custom Release
 
+usage:
+```
+./chisel-mult multi-client --config -config
+```
 Current custom release tag:
 
 v1.11.5-multi-watchdog
