@@ -22,6 +22,7 @@ range_tunnels:
     to: 22020
     target_host: "127.0.0.1"
     target_from: 9000
+    target_fixed: true
   - name_prefix: "capsule3"
     from: 30001
     to: 30020
